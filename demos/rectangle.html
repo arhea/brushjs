@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Canvas SVG</title>
+
+<script src="../svgcanvas.js"></script>
+<script>
+	window.onload = function() {
+		
+		var ctx = new SVGCanvas( "SVG" );
+		//ctx.fill();
+		//console.log( ctx );
+		ctx.beginPath();
+			ctx.fillStyle = "#333333";
+			ctx.fillRect( 10 , 10 , 300 , 300 );
+			ctx.rotate(Math.PI / 4);
+		ctx.closePath();
+		
+		document.getElementById('svg').innerHTML = ctx.toDataURL("image/svg+xml");
+		
+	};
+</script>
+
+</head>
+
+<body>
+<canvas id="SVG" width="600" height="600" style="border: solid 1px #999999;">Your browser does not support canvas.</canvas>
+<div id="svg"></div>
+</body>
+</html>
