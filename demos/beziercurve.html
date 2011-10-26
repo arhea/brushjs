@@ -18,9 +18,23 @@
 (function() {
 		
 	var ctx = new CanvasSVG( "#SVG" );
+	
 	ctx.beginPath();
-		ctx.fillStyle = "#333333";
-		ctx.fillRect( 10 , 10 , 50 , 50 );
+		ctx.moveTo(188, 330);
+	 
+		var controlX1 = 140;
+		var controlY1 = 310;
+		var controlX2 = 388;
+		var controlY2 = 310;
+		var endX = 388;
+		var endY = 470;
+	 
+		ctx.bezierCurveTo(controlX1, controlY1, controlX2, 
+			controlY2, endX, endY);
+	 
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = "black"; // line color
+		ctx.stroke();
 	ctx.closePath();
 	
 	document.getElementById( "xml" ).innerHTML = ctx.toDataURL( "image/svg+xml" );

@@ -4,59 +4,125 @@
 <meta charset="UTF-8">
 <title>HTML5 Canvas SVG</title>
 
-<script src="svgcanvas.js"></script>
+<script src="canvassvg.js"></script>
+
+
+</head>
+
+<body>
+
+<canvas id="SVG" width="600" height="600" style="border: solid 1px #999999; float: left;">Your browser does not support canvas.</canvas>
+<div id="xml" style="border: solid 1px #999999; float: left;"></div>
+
 <script>
-	window.onload = function() {
+(function() {
 		
-		var ctx = new SVGCanvas( "SVG" );
+	var ctx = new CanvasSVG( "#SVG" );
+	
+	ctx.beginPath();
+		ctx.fillStyle = "#333333";
+		ctx.fillRect( 10 , 10 , 50 , 50 );
+	ctx.closePath();
+	
+	ctx.beginPath();
+		var centerX = 288;
+		var centerY = 160;
+		var radius = 75;
+		var startingAngle = 1.1 * Math.PI;
+		var endingAngle = 1.9 * Math.PI;
+		var counterclockwise = false;
+	 
+		ctx.arc(centerX, centerY, radius, startingAngle, 
+			endingAngle, counterclockwise);
+	 
+		ctx.lineWidth = 15;
+		ctx.strokeStyle = "black";
+		ctx.stroke();
+	ctx.closePath();
+	
+	ctx.beginPath();
+		var controlX = 488;
+		var controlY = 0;
+		var endX = 588;
+		var endY = 150;
+	 	
+		ctx.moveTo(388, 150);
+		ctx.quadraticCurveTo(controlX, controlY, endX, endY);
 		
-		console.log( ctx );
-		//ctx.fill();
-		//console.log( ctx );
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "black";
+		ctx.stroke();
+	ctx.closePath();
+	
+	ctx.beginPath();
+		ctx.moveTo(188, 330);
+	 
+		var controlX1 = 140;
+		var controlY1 = 310;
+		var controlX2 = 388;
+		var controlY2 = 310;
+		var endX = 388;
+		var endY = 470;
+	 
+		ctx.bezierCurveTo(controlX1, controlY1, controlX2, 
+			controlY2, endX, endY);
+	 
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = "black"; // line color
+		ctx.stroke();
+	ctx.closePath();
+	
+	ctx.beginPath();
+		var centerX = 388;
+		var centerY = 200;
+		var radius = 70;
+		var lineWidth = 5;
+	 
+		ctx.arc(centerX, centerY, radius, 0, Math.PI, false);
+	 
+		ctx.lineWidth = lineWidth;
+		ctx.fillStyle = "#8ED6FF";
+		ctx.fill();
+		ctx.strokeStyle = "black";
+		ctx.stroke();
+	ctx.closePath();
+	
+	ctx.fillStyle = "#333333";
+	
+	ctx.fillText( "Sample Text" , 400 , 10 );
+	
+	roundRect( ctx , 200 , 200, 25, 25, 3, true , false );
+	
+	document.getElementById( "xml" ).innerHTML = ctx.toDataURL( "image/svg+xml" );
+	
+	function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+		if (typeof stroke == "undefined" ) {
+		  stroke = true;
+		}
+		if (typeof radius === "undefined") {
+		  radius = 5;
+		}
 		ctx.beginPath();
-			ctx.fillStyle = "#333333";
-			ctx.fillRect( 10 , 10 , 50 , 50 );
-		ctx.closePath();
-		
-		ctx.fillText( "Sample Text" , 400 , 10 );
-		
-		roundRect( ctx , 200 , 200, 25, 25, 3, true , false );
-		
-		function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-			if (typeof stroke == "undefined" ) {
-			  stroke = true;
-			}
-			if (typeof radius === "undefined") {
-			  radius = 5;
-			}
-			ctx.beginPath();
-				ctx.moveTo(x + radius, y);
-				ctx.lineTo(x + width - radius, y);
-				ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-				ctx.lineTo(x + width, y + height - radius);
-				ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-				ctx.lineTo(x + radius, y + height);
-				ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-				ctx.lineTo(x, y + radius);
-				ctx.quadraticCurveTo(x, y, x + radius, y);
-			ctx.closePath();
+			ctx.moveTo(x + radius, y);
+			ctx.lineTo(x + width - radius, y);
+			ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+			ctx.lineTo(x + width, y + height - radius);
+			ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+			ctx.lineTo(x + radius, y + height);
+			ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
 			if (stroke) {
 			  ctx.stroke();
 			}
 			if (fill) {
 			  ctx.fill();
-			}        
-		}
+			}
+		ctx.closePath();       
+	}
 		
-		document.getElementById('svg').innerHTML = ctx.toDataURL("image/svg+xml");
-		
-	};
+})();
 </script>
 
-</head>
-
-<body>
-<canvas id="SVG" width="600" height="600" style="border: solid 1px #999999;">Your browser does not support canvas.</canvas>
-<div id="svg"></div>
 </body>
 </html>

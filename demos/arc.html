@@ -19,8 +19,19 @@
 		
 	var ctx = new CanvasSVG( "#SVG" );
 	ctx.beginPath();
-		ctx.fillStyle = "#333333";
-		ctx.fillRect( 10 , 10 , 50 , 50 );
+		var centerX = 288;
+		var centerY = 160;
+		var radius = 75;
+		var startingAngle = 1.1 * Math.PI;
+		var endingAngle = 1.9 * Math.PI;
+		var counterclockwise = false;
+	 
+		ctx.arc(centerX, centerY, radius, startingAngle, 
+			endingAngle, counterclockwise);
+	 
+		ctx.lineWidth = 15;
+		ctx.strokeStyle = "black";
+		ctx.stroke();
 	ctx.closePath();
 	
 	document.getElementById( "xml" ).innerHTML = ctx.toDataURL( "image/svg+xml" );

@@ -19,8 +19,17 @@
 		
 	var ctx = new CanvasSVG( "#SVG" );
 	ctx.beginPath();
-		ctx.fillStyle = "#333333";
-		ctx.fillRect( 10 , 10 , 50 , 50 );
+		var controlX = 488;
+		var controlY = 0;
+		var endX = 588;
+		var endY = 150;
+	 	
+		ctx.moveTo(388, 150);
+		ctx.quadraticCurveTo(controlX, controlY, endX, endY);
+		
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "black";
+		ctx.stroke();
 	ctx.closePath();
 	
 	document.getElementById( "xml" ).innerHTML = ctx.toDataURL( "image/svg+xml" );
