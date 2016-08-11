@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>HTML5 Canvas SVG</title>
 
-<script src="../canvassvg.js"></script>
+<script src="../brush.js"></script>
 
 
 </head>
@@ -16,26 +16,26 @@
 
 <script>
 (function() {
-		
-	var ctx = new CanvasSVG( "#SVG" );
-	
+
+	var ctx = new Brush( "#SVG" );
+
 	ctx.beginPath();
 		var centerX = 300;
 		var centerY = 300;
 		var radius = 135;
 		var lineWidth = 5;
-	 
+
 		ctx.arc(centerX, centerY, radius, 0, Math.PI, false);
-	 
+
 		ctx.lineWidth = lineWidth;
 		ctx.fillStyle = "#8ED6FF";
 		ctx.fill();
 		ctx.strokeStyle = "black";
 		ctx.stroke();
 	ctx.closePath();
-	
+
 	document.getElementById( "xml" ).innerHTML = ctx.toDataURL( "image/svg+xml" );
-		
+
 })();
 </script>
 

@@ -1,7 +1,7 @@
 (function( document , window , undefined ) {
-	
-var CanvasSVG = function( selector , context ) {
-	
+
+var Brush = function( selector , context ) {
+
 	/* Defaults */
 	this.strokeStyle = "black";
 	this.lineWidth = 1;
@@ -18,10 +18,10 @@ var CanvasSVG = function( selector , context ) {
 	this.textBaseline = "alphabetic";
 	this.globalAlpha = 1.0;
 	this.globalCompositeOperation = "source-over";
-	
+
 	this.target = Sizzle( selector , context )[0];
 	this.context = this.target.getContext("2d");
-	
+
 	/* SVG Configuration */
 	this.svg = {
 		paths   : [],
@@ -33,15 +33,15 @@ var CanvasSVG = function( selector , context ) {
 			type : "path"
 		}
 	};
-	
-	
-	this.style = CanvasSVG.defaults.style;
-	
+
+
+	this.style = Brush.defaults.style;
+
 	this.sync = function() {
-		
+
 		this.svg.width = this.target.width;
 		this.svg.height = this.target.height;
-		
+
 		this.context.strokeStyle = this.style.strokeStyle = this.strokeStyle;
 		this.context.lineWidth = this.style.lineWidth = this.lineWidth;
 		this.context.lineCap = this.style.lineCap = this.lineCap;
@@ -57,19 +57,19 @@ var CanvasSVG = function( selector , context ) {
 		this.context.textBaseline = this.style.textBaseline = this.textBaseline;
 		this.context.globalAlpha = this.style.globalAlpha = this.globalAlpha;
 		this.context.globalCompositeOperation = this.context.globalCompositeOperation = this.globalCompositeOperation;
-			
+
 	}
-	
+
 };
 
-CanvasSVG.defaults = {
-	
+Brush.defaults = {
+
 	subpath : {
 		style : {},
 		path : "",
 		type : "path"
 	},
-	
+
 	style : {
 		strokeStyle : "black",
 		lineWidth : 1,
@@ -86,11 +86,11 @@ CanvasSVG.defaults = {
 		textBaseline : "alphabetic",
 		globalAlpha : 1.0,
 		globalCompositeOperation : "source-over"
-	}	
-	
+	}
+
 }
 
-CanvasSVG.prototype = {
+Brush.prototype = {
 
 	beginPath : function() {
 		this.sync();
@@ -102,7 +102,7 @@ CanvasSVG.prototype = {
 		};
 		this.context.beginPath();
 	},
-	
+
 	closePath : function() {
 		this.sync();
 		if( this.svg.subpath.path.length > 0 ) { this.svg.paths.push(this.svg.subpath); }
@@ -113,58 +113,58 @@ CanvasSVG.prototype = {
 		};
 		this.context.closePath();
 	},
-	
+
 	moveTo : function( x , y ) {
 		this.sync();
 		this.svg.subpath.path += "M " + x + " " + y + " ";
 		this.context.moveTo( x , y );
 	},
-	
+
 	lineTo : function( x , y ) {
 		this.sync();
 		this.svg.subpath.path += "L " + x + " " + y + " ";
 		this.context.lineTo( x , y );
 	},
-	
+
 	quadraticCurveTo : function( cpx, cpy, x, y ) {
 		this.sync();
 		this.svg.subpath.path += "Q " + cpx + " " + cpy + " " + x + " " + " " + y+ " ";
 		this.context.quadraticCurveTo( cpx, cpy, x, y );
 	},
-	
+
 	bezierCurveTo : function( cp1x, cp1y, cp2x, cp2y, x, y ) {
 		this.sync();
 		this.svg.subpath.path += "C " + cp1x + " " + cp1y + " " + cp2x + " " + cp2y + " " + x + " " + y+ " ";
 		this.context.bezierCurveTo( cp1x, cp1y, cp2x, cp2y, x, y ) ;
 	},
-	
+
 	arcTo : function( x1, y1, x2, y2, radius ) {
 		this.sync();
 		this.moveTo( x1 , x2 );
 		this.svg.subpath.path += "a " + radius + " " + radius + " 0 1,1 " + x2-x1 + " " + y2-y1 + " ";
 		this.context.arcTo( x1, y1, x2, y2, radius );
 	},
-	
+
 	arc : function( x, y, radius, startAngle, endAngle, anticlockwise ) {
 		this.sync();
-		
+
 		var startX = x + radius * Math.cos(startAngle);
 		var startY = y + radius * Math.sin(startAngle);
-		
+
 		var endX = x + radius * Math.cos(endAngle);
 		var endY = y + radius * Math.sin(endAngle);
-		
+
 		this.moveTo( startX , startY );
-		
+
 		if( anticlockwise ) {
 			this.svg.subpath.path += "A " + radius + " " + radius + " 0 1,1 " + endX + " " + endY + " ";
 		} else {
 			this.svg.subpath.path += "A " + radius + " " + radius + " 0 0,1 " + endX + " " + endY + " ";
 		}
-		
+
 		this.context.arc( x, y, radius, startAngle, endAngle, anticlockwise );
 	},
-	
+
 	rect : function( x , y , width , height ) {
 		this.sync();
 		this.moveTo( x , y );
@@ -174,7 +174,7 @@ CanvasSVG.prototype = {
 		this.lineTo( x , y );
 		this.context.rect( x , y , width , height );
 	},
-	
+
 	clearRect : function( x , y , width , height ) {
 		this.sync();
 		this.moveTo( x , y );
@@ -184,7 +184,7 @@ CanvasSVG.prototype = {
 		this.lineTo( x , y );
 		this.context.clearRect( x , y , width , height );
 	},
-	
+
 	fillRect : function( x , y , width , height )  {
 		this.sync();
 		this.beginPath();
@@ -197,7 +197,7 @@ CanvasSVG.prototype = {
 		this.closePath();
 		this.context.fillRect( x , y , width , height );
 	},
-	
+
 	strokeRect : function( x , y , width , height )  {
 		this.sync();
 		this.beginPath();
@@ -210,12 +210,12 @@ CanvasSVG.prototype = {
 		this.closePath();
 		this.context.strokeRect( x , y , width , height );
 	},
-	
+
 	isPointInPath : function( x, y ) {
 		this.sync();
 		return this.context.isPointInPath( x , y );
 	},
-	
+
 	stroke : function() {
 		this.sync();
 		this.svg.subpath.style.strokeStyle = this.strokeStyle;
@@ -225,34 +225,34 @@ CanvasSVG.prototype = {
 		this.svg.subpath.style.miterLimit = this.miterLimit;
 		this.context.stroke();
 	},
-	
+
 	fill : function() {
 		this.sync();
 		this.svg.subpath.style.fillStyle = this.fillStyle;
 		this.context.fill();
 	},
-	
+
 	strokeText : function( text , x , y ) {
 		this.sync();
-		
+
 		var path = {
 			"type"   : "text",
 			"value"  : text,
 			"x"      : x,
 			"y"      : y,
 			"style"  : {
-				"font" : this.font + " " + this.strokeStyle	
+				"font" : this.font + " " + this.strokeStyle
 			}
 		};
-		
+
 		this.svg.paths.push( path );
-		
+
 		this.context.strokeText( text , x , y );
 	},
-	
+
 	fillText : function( text , x , y ) {
 		this.sync();
-		
+
 		var path = {
 			"type"   : "text",
 			"value"  : text,
@@ -263,118 +263,118 @@ CanvasSVG.prototype = {
 				"fillStyle" : this.fillStyle
 			}
 		};
-		
+
 		this.svg.paths.push( path );
-		
+
 		this.context.fillText( text , x , y );
 	},
-	
+
 	measureText : function( text ) {
 		this.sync();
 		return this.context.measureText( text );
 	},
-	
+
 	clip : function() {
 		this.sync();
 		this.context.clip();
 	},
-	
+
 	save : function() {
 		this.sync();
 		this.context.save();
 	},
-	
+
 	restore : function() {
 		this.sync();
 		this.context.restore();
 	},
-	
+
 	createLinearGradient : function( x0, y0, x1, y1 ) {
 		this.sync();
 		return this.context.createLinearGradient( x0, y0, x1, y1 );
 	},
-	
+
 	createRadialGradient : function( x0, y0, r0, x1, y1, r1 ) {
 		this.sync();
 		return this.context.createRadialGradient( x0, y0, r0, x1, y1, r1 );
 	},
-	
+
 	createPattern : function( image, repetition ) {
 		this.sync();
 		return this.context.createPattern( image, repetition );
 	},
-	
+
 	createImageData : function( sw, sh ) {
 		this.sync();
 		return (arguments.length == 1 ? this.context.createImageData( imageData ) : this.context.createImageData( sw, sh ));
 	},
-	
+
 	createImageData : function( imageData ) {
 		this.sync();
 		return this.context.createImageData( imageData );
 	},
-	
+
 	getImageData : function( sx, sy, sw, sh ) {
 		this.sync();
 		return this.context.getImageData( sx, sy, sw, sh );
 	},
-	
+
 	putImageData : function( imagedata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight ) {
 		this.sync();
 		return this.context.putImageData( imagedata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight );
 	},
-	
+
 	drawImage : function() {
 		this.sync();
-		return ( arguments.length > 5 ) ? 
+		return ( arguments.length > 5 ) ?
 			this.context.drawImage( arguments[0].value , arguments[1].value , arguments[2].value , arguments[3].value, arguments[4].value ) :
 			this.context.drawImage( arguments[0].value , arguments[1].value , arguments[2].value , arguments[3].value, arguments[4].value, arguments[5].value , arguments[6].value, arguments[7].value, arguments[8].value );
 	},
-	
+
 	scale : function( x , y ) {
 		this.sync();
 		this.svg.subpath.transforms.scale = {
 			"x" : x,
-			"y" : y	
+			"y" : y
 		}
 		return this.context.scale( x , y );
 	},
-	
+
 	rotate : function( angle ) {
 		this.sync();
 		this.svg.subpath.transforms.rotate = angle;
 		this.context.rotate( angle );
 	},
-	
+
 	translate : function( x , y ) {
 		this.sync();
 		this.svg.subpath.transforms.translate = {
 			"x" : x,
-			"y" : y	
+			"y" : y
 		}
-		this.context.translate( x , y );	
+		this.context.translate( x , y );
 	},
-	
+
 	transform : function( m11, m12, m21, m22, dx, dy ) {
 		this.sync();
 		this.context.transform( m11, m12, m21, m22, dx, dy );
 	},
-	
+
 	setTransform : function( m11, m12, m21, m22, dx, dy ) {
 		this.sync();
 		this.context.setTransform( m11, m12, m21, m22, dx, dy );
 	},
-	
+
 	toDataURL : function( type , args ) {
 		this.sync();
 		if( type == "image/svg+xml" ) {
-			
+
 			var xml = "<?xml version=\"1.0\" standalone=\"no\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">";
 			
 			xml += "<svg width=\""+this.svg.width+"px\" height=\""+this.svg.height+"px\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
-			
+
 			var paths = this.svg.paths;
-			
+
 			for( var i=0; i < paths.length; i++ ) {
 				var obj = paths[i];
 				if( obj.type == "path" ) {
@@ -383,70 +383,70 @@ CanvasSVG.prototype = {
 					xml += "<text x=\""+obj.x+"\" y=\""+obj.y+"\" "+convertStyle( obj.style )+" " + convertTransforms( obj.transforms ) + ">" + obj.value + "</text>";
 				}
 			}
-			
+
 			return xml;
-			
+
 		} else {
 			return this.context.toDataURL( type , args );
 		}
-		
+
 	}
-	
+
 };
 
 function convertStyle( params ) {
 	var style = 'style="';
 	var count = 0;
-	
+
 	if( params["fillStyle"] == undefined ) {
 		params["fillStyle"] = "none";
 	}
-	
+
 	for( var attr in params ) {
-		
+
 		var option = attr;
-		
+
 		if( attr == "strokeStyle" ) {
-			option = "stroke"; 
+			option = "stroke";
 		} else if( attr == "lineWidth" ) {
-			option = "stroke-width"; 
+			option = "stroke-width";
 		} else if( attr == "fillStyle" ) {
-			option = "fill"; 
+			option = "fill";
 		} else if( attr == "textAlign" ) {
-			option = "text-align"; 
+			option = "text-align";
 		} else if( attr == "lineCap" ) {
-			option = "stroke-linecap"; 
+			option = "stroke-linecap";
 		} else if( attr == "lineJoin" ) {
-			option = "stroke-linejoin"; 
+			option = "stroke-linejoin";
 		} else if( attr == "miterLimit" ) {
-			option = "stroke-miterlimit"; 
-		} 
-		
+			option = "stroke-miterlimit";
+		}
+
 		if( attr == "font" ) {
-			
+
 			var sizeRegexp = new RegExp( /\d+(px|pt|em)/ );
 			var fontSize = sizeRegexp.exec( params[attr] ) || ["12px",""];
-			
+
 			var weightRegexp = new RegExp( /(bold|light)/ );
 			var fontWeight = weightRegexp.exec( params[attr] ) || ["normal",""];
-			
+
 			var styleRegexp = new RegExp( /(italic|oblique)/ );
 			var fontStyle = styleRegexp.exec( params[attr] ) || ["normal",""];
-			
+
 			var fontRegexp = new RegExp( /(sans\-serif|arial|times\snew\sroman)/ );
 			var font = fontRegexp.exec( params[attr] ) || ["arial",""];
-			
+
 			style += "font-size:"+fontSize[0]+"; ";
 			style += "font-weight:"+fontWeight[0]+"; ";
 			style += "font-style:"+fontStyle[0]+"; ";
 			style += "font-family:"+font[0]+"; ";
-			
+
 		} else {
 			style += option+":"+params[attr]+"; ";
 		}
-		
-		
-		
+
+
+
 		count++;
 	}
 	style+='"';
@@ -461,9 +461,9 @@ function convertTransforms( params ) {
 	return transforms;
 }
 
-window.CanvasSVG = CanvasSVG;
+window.Brush = Brush;
 
-	
+
 })( document , window );
 
 /*!
@@ -502,7 +502,7 @@ var Sizzle = function( selector, context, results, seed ) {
 	if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
 		return [];
 	}
-	
+
 	if ( !selector || typeof selector !== "string" ) {
 		return results;
 	}
@@ -512,7 +512,7 @@ var Sizzle = function( selector, context, results, seed ) {
 		contextXML = Sizzle.isXML( context ),
 		parts = [],
 		soFar = selector;
-	
+
 	// Reset the position of the chunker regexp (start from head)
 	do {
 		chunker.exec( "" );
@@ -520,9 +520,9 @@ var Sizzle = function( selector, context, results, seed ) {
 
 		if ( m ) {
 			soFar = m[3];
-		
+
 			parts.push( m[1] );
-		
+
 			if ( m[2] ) {
 				extra = m[3];
 				break;
@@ -546,7 +546,7 @@ var Sizzle = function( selector, context, results, seed ) {
 				if ( Expr.relative[ selector ] ) {
 					selector += parts.shift();
 				}
-				
+
 				set = posProcess( selector, set, seed );
 			}
 		}
@@ -674,7 +674,7 @@ Sizzle.find = function( expr, context, isXML ) {
 
 	for ( i = 0, len = Expr.order.length; i < len; i++ ) {
 		type = Expr.order[i];
-		
+
 		if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
 			left = match[1];
 			match.splice( 1, 1 );
@@ -1046,7 +1046,7 @@ var Expr = Sizzle.selectors = {
 
 		ATTR: function( match, curLoop, inplace, result, not, isXML ) {
 			var name = match[1] = match[1].replace( rBackslash, "" );
-			
+
 			if ( !isXML && Expr.attrMap[name] ) {
 				match[1] = Expr.attrMap[name];
 			}
@@ -1080,7 +1080,7 @@ var Expr = Sizzle.selectors = {
 			} else if ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test( match[0] ) ) {
 				return true;
 			}
-			
+
 			return match;
 		},
 
@@ -1090,7 +1090,7 @@ var Expr = Sizzle.selectors = {
 			return match;
 		}
 	},
-	
+
 	filters: {
 		enabled: function( elem ) {
 			return elem.disabled === false && elem.type !== "hidden";
@@ -1103,14 +1103,14 @@ var Expr = Sizzle.selectors = {
 		checked: function( elem ) {
 			return elem.checked === true;
 		},
-		
+
 		selected: function( elem ) {
 			// Accessing this property makes selected-by-default
 			// options in Safari work properly
 			if ( elem.parentNode ) {
 				elem.parentNode.selectedIndex;
 			}
-			
+
 			return elem.selected === true;
 		},
 
@@ -1132,7 +1132,7 @@ var Expr = Sizzle.selectors = {
 
 		text: function( elem ) {
 			var attr = elem.getAttribute( "type" ), type = elem.type;
-			// IE6 and 7 will map elem.type to 'text' for new HTML5 types (search, etc) 
+			// IE6 and 7 will map elem.type to 'text' for new HTML5 types (search, etc)
 			// use getAttribute instead to test this case
 			return elem.nodeName.toLowerCase() === "input" && "text" === type && ( attr === type || attr === null );
 		},
@@ -1251,21 +1251,21 @@ var Expr = Sizzle.selectors = {
 				case "only":
 				case "first":
 					while ( (node = node.previousSibling) )	 {
-						if ( node.nodeType === 1 ) { 
-							return false; 
+						if ( node.nodeType === 1 ) {
+							return false;
 						}
 					}
 
-					if ( type === "first" ) { 
-						return true; 
+					if ( type === "first" ) {
+						return true;
 					}
 
 					node = elem;
 
 				case "last":
 					while ( (node = node.nextSibling) )	 {
-						if ( node.nodeType === 1 ) { 
-							return false; 
+						if ( node.nodeType === 1 ) {
+							return false;
 						}
 					}
 
@@ -1278,22 +1278,22 @@ var Expr = Sizzle.selectors = {
 					if ( first === 1 && last === 0 ) {
 						return true;
 					}
-					
+
 					doneName = match[0];
 					parent = elem.parentNode;
-	
+
 					if ( parent && (parent[ expando ] !== doneName || !elem.nodeIndex) ) {
 						count = 0;
-						
+
 						for ( node = parent.firstChild; node; node = node.nextSibling ) {
 							if ( node.nodeType === 1 ) {
 								node.nodeIndex = ++count;
 							}
-						} 
+						}
 
 						parent[ expando ] = doneName;
 					}
-					
+
 					diff = elem.nodeIndex - last;
 
 					if ( first === 0 ) {
@@ -1312,7 +1312,7 @@ var Expr = Sizzle.selectors = {
 		TAG: function( elem, match ) {
 			return (match === "*" && elem.nodeType === 1) || !!elem.nodeName && elem.nodeName.toLowerCase() === match;
 		},
-		
+
 		CLASS: function( elem, match ) {
 			return (" " + (elem.className || elem.getAttribute("class")) + " ")
 				.indexOf( match ) > -1;
@@ -1382,7 +1382,7 @@ var makeArray = function( array, results ) {
 		results.push.apply( results, array );
 		return results;
 	}
-	
+
 	return array;
 };
 
@@ -1614,7 +1614,7 @@ if ( document.querySelectorAll ) {
 		if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
 			return;
 		}
-	
+
 		Sizzle = function( query, context, extra, seed ) {
 			context = context || document;
 
@@ -1623,24 +1623,24 @@ if ( document.querySelectorAll ) {
 			if ( !seed && !Sizzle.isXML(context) ) {
 				// See if we find a selector to speed up
 				var match = /^(\w+$)|^\.([\w\-]+$)|^#([\w\-]+$)/.exec( query );
-				
+
 				if ( match && (context.nodeType === 1 || context.nodeType === 9) ) {
 					// Speed-up: Sizzle("TAG")
 					if ( match[1] ) {
 						return makeArray( context.getElementsByTagName( query ), extra );
-					
+
 					// Speed-up: Sizzle(".CLASS")
 					} else if ( match[2] && Expr.find.CLASS && context.getElementsByClassName ) {
 						return makeArray( context.getElementsByClassName( match[2] ), extra );
 					}
 				}
-				
+
 				if ( context.nodeType === 9 ) {
 					// Speed-up: Sizzle("body")
 					// The body element only exists once, optimize finding it
 					if ( query === "body" && context.body ) {
 						return makeArray( [ context.body ], extra );
-						
+
 					// Speed-up: Sizzle("#ID")
 					} else if ( match && match[3] ) {
 						var elem = context.getElementById( match[3] );
@@ -1653,12 +1653,12 @@ if ( document.querySelectorAll ) {
 							if ( elem.id === match[3] ) {
 								return makeArray( [ elem ], extra );
 							}
-							
+
 						} else {
 							return makeArray( [], extra );
 						}
 					}
-					
+
 					try {
 						return makeArray( context.querySelectorAll(query), extra );
 					} catch(qsaError) {}
@@ -1696,7 +1696,7 @@ if ( document.querySelectorAll ) {
 					}
 				}
 			}
-		
+
 			return oldSizzle(query, context, extra, seed);
 		};
 
@@ -1723,7 +1723,7 @@ if ( document.querySelectorAll ) {
 			// This should fail with an exception
 			// Gecko does not error, returns false instead
 			matches.call( document.documentElement, "[test!='']:sizzle" );
-	
+
 		} catch( pseudoError ) {
 			pseudoWorks = true;
 		}
@@ -1733,7 +1733,7 @@ if ( document.querySelectorAll ) {
 			expr = expr.replace(/\=\s*([^'"\]]*)\s*\]/g, "='$1']");
 
 			if ( !Sizzle.isXML( node ) ) {
-				try { 
+				try {
 					if ( pseudoWorks || !Expr.match.PSEUDO.test( expr ) && !/!=/.test( expr ) ) {
 						var ret = matches.call( node, expr );
 
@@ -1770,7 +1770,7 @@ if ( document.querySelectorAll ) {
 	if ( div.getElementsByClassName("e").length === 1 ) {
 		return;
 	}
-	
+
 	Expr.order.splice(1, 0, "CLASS");
 	Expr.find.CLASS = function( match, context, isXML ) {
 		if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
@@ -1821,7 +1821,7 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
 
 		if ( elem ) {
 			var match = false;
-			
+
 			elem = elem[dir];
 
 			while ( elem ) {
@@ -1874,7 +1874,7 @@ if ( document.documentElement.contains ) {
 
 Sizzle.isXML = function( elem ) {
 	// documentElement is verified for cases where it doesn't yet exist
-	// (such as loading iframes in IE - #4833) 
+	// (such as loading iframes in IE - #4833)
 	var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
 
 	return documentElement ? documentElement.nodeName !== "HTML" : false;
